@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Logo from '../../Images/logo2.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCartArrowDown } from '@fortawesome/free-solid-svg-icons';
-import './Header.css'
+import './Header.css';
 
 const Header = (props) => {
     const auth = useAuth();
