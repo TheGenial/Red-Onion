@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import AllFeatures from '../../Data/features.json';
 import './Features.css'
 import SingleFeature from '../SingleFeature/SingleFeature';
+import AllFeatures from '../../fakeData/FeaturesData'
 
 const Features = (props) => {
     const[features, setFeatures] = useState([]);
     useEffect(() => {
         setFeatures(AllFeatures);
-    }, []);
+    }, [])
     return (
         <section className="features my-5">
             <div className="container">
@@ -21,7 +21,7 @@ const Features = (props) => {
                         </div>
                     </div>
                     {
-                        features.map(feature => <SingleFeature key={feature.id} feature={feature}></SingleFeature>)
+                        features && features.map(feature => <SingleFeature key={feature.id} feature={feature}></SingleFeature>)
                     }
                 </div>
             </div>

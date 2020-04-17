@@ -2,16 +2,23 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import './Foods.css'
 import FoodItem from '../FoodItem/FoodItem';
-import AllFoods from '../../Data/foods.json';
 import { useState } from 'react';
 import { useEffect } from 'react';
+
 const Foods = (props) => {
     const [foods, setFoods] = useState([]);
     const [selectedFoodType, setSelectedFoodType] = useState("Breakfast");
     useEffect(() => {
-        setFoods(AllFoods);
-    } ,[])
-    const selectedFoods =  foods.filter(food => food.type == selectedFoodType)
+        fetch('http://localhost:5000/foods')
+        .then(res => res.json())
+        .then(data => {
+            setFoods(data);
+            console.log(data)
+        })
+        .catch(err => console.log(err))
+    } ,[foods.length])
+
+    const selectedFoods =  foods.filter(food => food.type === selectedFoodType)
     
     return (
         <section className="food-area my-5">
@@ -31,8 +38,9 @@ const Foods = (props) => {
                 </nav>
 
                 <div className="row my-5">
+                   
                     {
-                        selectedFoods.map(food => <FoodItem key={food.id} food={food}></FoodItem>)
+                        selectedFoods.map(food => <FoodItem key={food.id}  food={food} />)
                     }
                 </div>
                 <div className="text-center">
@@ -43,6 +51,7 @@ const Foods = (props) => {
                         </Link>
                         :
                         <button disabled className="btn btn-secondary">Check Out Your Food</button>
+
                     }
 
                 </div>

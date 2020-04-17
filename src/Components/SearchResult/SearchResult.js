@@ -8,7 +8,7 @@ const SearchResult = () => {
     const {searchQuery} = useParams();
     const searchResult = AllFoods.filter(food => food.name.includes(searchQuery) );
 
-    console.log(searchQuery, searchResult);
+    
     return (
         <section className="food-area my-5">
             <div className="container">

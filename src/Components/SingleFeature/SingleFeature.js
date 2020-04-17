@@ -7,11 +7,9 @@ function SingleFeature(props) {
     const [descriptionCollapse, setDescriptionCollapse] = useState(false);
 
     const showMore = () => {
-        console.log("Show More");
         setDescriptionCollapse(true);
     }
     const showLess = () => {
-        console.log("Show less");
         setDescriptionCollapse(false);
     }
     return (

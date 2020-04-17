@@ -28,7 +28,6 @@ const FoodDetails = (props) => {
     if(isSuccess){
         setTimeout(() => setIsSuccess(false),1500)
     }
-    console.log(isSuccess)
     return (
         <div className="food-details my-5 pt-5 container">
             <div className="row">
