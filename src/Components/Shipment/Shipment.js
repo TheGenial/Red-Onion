@@ -1,33 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import {Link} from 'react-router-dom';
 import './Shipment.css';
-import { useState } from 'react';
+import {loadStripe} from '@stripe/stripe-js';
+import {Elements} from '@stripe/react-stripe-js';
+  
+import Payment from '../Payment/Payment';
+import { useAuth } from '../SignUp/useAuth';
 
 const Shipment = (props) => {
-    const { register, handleSubmit, watch, errors } = useForm()
-    const onSubmit = data => props.deliveryDetailsHandler(data);
-    const { todoor, road, flat, businessname, address} = props.deliveryDetails;
-    const reduceQuantity =  (pId) => {
-        props.checkOutItemHandler(pId)
+    const auth = useAuth();
+    console.log(auth);
+    const stripePromise = loadStripe('pk_test_HniRmjYllCu1o9Z67nLp00l600TON0Goy4');
+    const [paid, setPaid] = useState(null);
+    const markAsPaid = (paymentInfo) => {
+        setPaid(paymentInfo)
     }
+    useEffect(() =>{
+        window.scrollTo(0, 0)
+    }, []);
+    
+    const { register, handleSubmit, watch, errors } = useForm()
+    const onSubmit = data => {
+        props.deliveryDetailsHandler(data);
+        props.getUserEmail(auth.user.email);
+    };
+    const { todoor, road, flat, businessname, address} = props.deliveryDetails;
+
     const subTotal = props.cart.reduce((acc,crr) => {
         return acc + (crr.price * crr.quantity) ;
     },0)
-
     const totalQuantity = props.cart.reduce((acc,crr) => {
         return acc + crr.quantity ;
     },0)
     const tax = (subTotal / 100) * 5;
     const deliveryFee = totalQuantity && 2;
     const grandTotal = subTotal + tax + deliveryFee;
+
     return (
         <div className="shipment container pt-5 my-5">
             <div className="row">
-                <div className="col-md-5">
+                <div style={{display:(todoor && road && flat && businessname && address) ? "none" : "block"}} className="col-md-5">
                     <h4>Edit Delivery Details</h4>
                     <hr/>
-                    <form onSubmit={handleSubmit(onSubmit)} className="py-5">
+                    <form  onSubmit={handleSubmit(onSubmit)} className="py-5">
                     
                         <div className="form-group">
                             <input name="todoor" className="form-control" ref={register({ required: true })} defaultValue={todoor} placeholder="Delivery To Door"/>
@@ -55,20 +71,25 @@ const Shipment = (props) => {
                         </div>
                     </form>
                 </div>
+                <div style={{display:(todoor && road && flat && businessname && address) ? "block" : "none"}} className="col-md-5">
+                    <Elements stripe={stripePromise}>
+                        <Payment markAsPaid={markAsPaid}/>
+                    </Elements>
+                </div>
                 <div className="offset-md-2 col-md-5">
                     <div className="restaurant-info mb-5">
-                        <h4>Form <strong> Star Kabab And Restaura</strong></h4>
+                        <h4>Form <strong> Red onion Restaurant</strong></h4>
                         <h5>Arriving in 20-30 min</h5>
-                        <h5>107 Rd No 9</h5>
+                        <h5>Rd No 9</h5>
                     </div>
                    
                     {
                         props.cart.map(item => 
                             <div className="single-checkout-item mb-3 bg-light rounded d-flex align-items-center justify-content-between p-3">
-                                <img width="100px" src={item.images[0]} alt=""/>
+                                <img width="100px" src={item.image} alt=""/>
                                 <div>
                                     <h6>{item.name}</h6>
-                                    <h4 className="text-danger">${item.price.toFixed(2)}</h4>
+                                    <h4 className="text-danger">${item.amount.toFixed(2)}</h4>
                                     <p>Delivery free</p>
                                 </div>
                                 <div className="checkout-item-button ml-3 btn">
@@ -95,7 +116,7 @@ const Shipment = (props) => {
                         <p className="h5 d-flex justify-content-between"><span>Total</span> <span>${grandTotal.toFixed(2)}</span></p>
                         {
                             totalQuantity ?
-                            todoor && road && flat && businessname && address ? 
+                            paid ? 
                                 <Link to="/order-complete">
                                     <button onClick={() => props.clearCart()}  className="btn btn-block btn-danger btn-secondary">Check Out Your Food</button>
                                 </Link>
@@ -104,7 +125,6 @@ const Shipment = (props) => {
                             :
                             <button disabled className="btn btn-block btn-secondary">Nothing to Checkout</button>
 
-                    
                     }
                     </div>
                 </div>

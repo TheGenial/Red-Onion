@@ -7,9 +7,9 @@ import { useEffect } from 'react';
 
 const Foods = (props) => {
     const [foods, setFoods] = useState([]);
-    const [selectedFoodType, setSelectedFoodType] = useState("Breakfast");
+    const [selectedFoodType, setSelectedFoodType] = useState("breakfast");
     useEffect(() => {
-        fetch('http://localhost:5000/foods')
+        fetch('https://quiet-eyrie-75065.herokuapp.com/foods')
         .then(res => res.json())
         .then(data => {
             setFoods(data);
@@ -18,21 +18,22 @@ const Foods = (props) => {
         .catch(err => console.log(err))
     } ,[foods.length])
 
-    const selectedFoods =  foods.filter(food => food.type === selectedFoodType)
+    const selectedFoods =  foods.filter(food => food.category === selectedFoodType)
     
     return (
+        
         <section className="food-area my-5">
             <div className="container">
                 <nav>
                     <ul className="nav justify-content-center">
-                        <li onClick={() => setSelectedFoodType("Breakfast")} className="nav-item">
-                            <span  to="breakfast" className={selectedFoodType === "Breakfast" ?  "active nav-link" : "nav-link"}>Breakfast</span>
+                        <li onClick={() => setSelectedFoodType("breakfast")} className="nav-item">
+                            <span  to="breakfast" className={selectedFoodType === "breakfast" ?  "active nav-link" : "nav-link"}>Breakfast</span>
                         </li>
-                        <li onClick={() => setSelectedFoodType("Lunch")} className="nav-item">
-                            <span to="breakfast" className={selectedFoodType === "Lunch" ?  "active nav-link" : "nav-link"}>Lunch</span>
+                        <li onClick={() => setSelectedFoodType("lunch")} className="nav-item">
+                            <span to="breakfast" className={selectedFoodType === "lunch" ?  "active nav-link" : "nav-link"}>Lunch</span>
                         </li>
-                        <li onClick={() => setSelectedFoodType("Dinner")} className="nav-item">
-                            <span to="breakfast" className={selectedFoodType === "Dinner" ?  "active nav-link" : "nav-link"}>Dinner</span>
+                        <li onClick={() => setSelectedFoodType("dinner")} className="nav-item">
+                            <span to="breakfast" className={selectedFoodType === "dinner" ?  "active nav-link" : "nav-link"}>Dinner</span>
                         </li>
                     </ul>
                 </nav>
